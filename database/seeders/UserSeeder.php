@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Kutab;
 use App\Models\User;
-use Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use function Laravel\Prompts\password;
 
 class UserSeeder extends Seeder
@@ -25,6 +25,9 @@ class UserSeeder extends Seeder
             'password' => Hash::make('123456'),
             'sex' => 1
         ])->superSheikh()->create();
+        
+        // Assign super-sheikh role
+        $superSheikh->user->assignRole('super-sheikh');
 
 
         // create kutabs for the superSheikh
@@ -102,6 +105,55 @@ class UserSeeder extends Seeder
         \App\Models\SheikhGroup::create(['sheikh_id' => $sheikh3->id, 'group_id' => $group1->id]);
         \App\Models\SheikhGroup::create(['sheikh_id' => $sheikh5->id, 'group_id' => $group2->id]);
         \App\Models\SheikhGroup::create(['sheikh_id' => $sheikh4->id, 'group_id' => $group3->id]);
+
+        // Assign sheikh roles
+        $sheikh1->user->assignRole('sheikh');
+        $sheikh2->user->assignRole('sheikh');
+        $sheikh3->user->assignRole('sheikh');
+        $sheikh4->user->assignRole('sheikh');
+        $sheikh5->user->assignRole('sheikh');
+
+        // Create parent users
+        $parent1 = User::create([
+            'first_name' => 'عبدالله',
+            'middle_name' => 'محمد',
+            'last_name' => 'أحمد',
+            'phone' => '01093033121',
+            'password' => Hash::make('123456'),
+            'sex' => 1
+        ]);
+        $parent1->assignRole('parent');
+
+        $parent2 = User::create([
+            'first_name' => 'فاطمة',
+            'middle_name' => 'علي',
+            'last_name' => 'محمد',
+            'phone' => '01093033122',
+            'password' => Hash::make('123456'),
+            'sex' => 0
+        ]);
+        $parent2->assignRole('parent');
+
+        // Create student users
+        $student1 = User::create([
+            'first_name' => 'محمد',
+            'middle_name' => 'عبدالله',
+            'last_name' => 'أحمد',
+            'phone' => '01093033123',
+            'password' => Hash::make('123456'),
+            'sex' => 1
+        ])->student()->create();
+        $student1->user->assignRole('student');
+
+        $student2 = User::create([
+            'first_name' => 'عائشة',
+            'middle_name' => 'عبدالله',
+            'last_name' => 'أحمد',
+            'phone' => '01093033124',
+            'password' => Hash::make('123456'),
+            'sex' => 0
+        ])->student()->create();
+        $student2->user->assignRole('student');
 
 
     }
